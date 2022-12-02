@@ -4,6 +4,7 @@ import Toast from 'react-native-toast-message';
 import {Provider} from 'react-native-paper';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
+import SearchVehicle from './screens/SearchVehicle';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,6 +14,11 @@ const Main = () => {
       <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SearchVehicle"
+        component={SearchVehicle}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

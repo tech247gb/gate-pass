@@ -19,9 +19,11 @@
     "react-native": "0.64.3",
     "react-native-autocomplete-dropdown": "^2.1.0",
     "react-native-csv": "^0.2.0",
+    "react-native-document-picker": "^8.1.2",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "*",
     "react-native-material-menu": "^2.0.0",
+    "react-native-modal": "^13.0.1",
     "react-native-paper": "^5.0.0-rc.8",
     "react-native-paper-dropdown": "^1.0.7",
     "react-native-permissions": "^3.6.1",
@@ -32,6 +34,7 @@
     "react-native-toast-message": "^2.1.5",
     "react-native-vector-icons": "^9.2.0",
     "react-papaparse": "^4.1.0",
+    "string-similarity": "^4.0.4",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

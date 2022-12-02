@@ -127,8 +127,9 @@ const HomeScreen = props => {
    * Set available data to dataOnCsv for insertion to database
    */
   const selectOneFile = async () => {
-    //Opening Document Picker for selection of one file
-
+    /**
+     * Opening Document Picker for selection of one file
+     * */
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
@@ -373,11 +374,7 @@ const HomeScreen = props => {
                     contentStyle={{color: MD3Colors.error0}}
                     leadingIcon="car-info"
                     onPress={() => {
-                      navigation.navigate('Main', {
-                        screen: 'AddVehicleDetailsScreen',
-                        params: {vehicleId: null},
-                      });
-                      hideMenu();
+                      //
                     }}
                     title="Register Vehicle"
                   />
@@ -393,19 +390,6 @@ const HomeScreen = props => {
               imageStyle={{
                 resizeMode: 'center',
               }}></ImageBackground>
-            <FAB
-              icon="car"
-              label={`Total Vehicles - ${totalCount}`}
-              customSize={30}
-              style={styles.fab}
-              mode="elevated"
-              animated={true}
-              onPress={() =>
-                navigation.navigate('Main', {
-                  screen: 'ViewAllVehicleDetailsScreen',
-                })
-              }
-            />
           </View>
           <View style={styles.flex2}>
             <Button
@@ -426,8 +410,8 @@ const HomeScreen = props => {
               labelStyle={styles.homeScreenButtonLabel}
               style={styles.homeScreenButtons}
               mode="elevated"
-              onPress={() =>
-                navigation.navigate('Main', {screen: 'DocumentScannerScreen'})
+              onPress={() =>{}
+              //  
               }>
               Scan Number Plate
             </Button>
