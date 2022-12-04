@@ -75,7 +75,7 @@ const HomeScreen = props => {
     });
   }, []);
 
-  //Total Count LiveCheck
+  /** Total Count LiveCheck */
   useEffect(async () => {
     const newCount = await vehicleFromDatabase();
     setTotalCount(newCount.count);
@@ -142,7 +142,7 @@ const HomeScreen = props => {
           Papa.parse(res, {
             header: true,
             skipEmptyLines: true,
-            complete:  async (results)=> {
+            complete: async results => {
               let data = [];
               if (results && results['data'] && results['data'].length > 0) {
                 const aa = XLSX.read(res, {type: 'binary'});
@@ -410,8 +410,8 @@ const HomeScreen = props => {
               labelStyle={styles.homeScreenButtonLabel}
               style={styles.homeScreenButtons}
               mode="elevated"
-              onPress={() =>{}
-              //  
+              onPress={() =>
+                navigation.navigate('Main', {screen: 'DocumentScanner'})
               }>
               Scan Number Plate
             </Button>

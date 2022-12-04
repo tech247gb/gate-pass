@@ -18,11 +18,15 @@ import {
   MD3Colors,
   Divider,
   Text,
+  Chip,
 } from 'react-native-paper';
+import TextRecognition from '@react-native-ml-kit/text-recognition';
 import {useIsFocused} from '@react-navigation/native';
+let stringSimilarity = require('string-similarity');
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   viewVehicleDetails,
+  regexVehicleNumberFinder,
   autoCompleteDataFromDb,
   issuePass,
   revertPass,
@@ -34,8 +38,10 @@ const SearchVehicle = props => {
   const [suggestionsList, setSuggestionsList] = useState(null);
   const [fieldMapping, setFieldMapping] = useState({});
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [similarResult, setSimilarResult] = useState([]);
   const [uniqueField, setUniqueField] = useState();
   const isFocused = useIsFocused();
+  const croppedImageUrl = props?.route?.params?.croppedImageUrl;
   const {navigation} = props;
 
   useEffect(async () => {
@@ -44,7 +50,65 @@ const SearchVehicle = props => {
       setUniqueField(uniqueId);
     }
   }, [isFocused]);
- 
+
+  /** UseEffect for identifying navigation From Document Scanner */
+  useEffect(async () => {
+    if (croppedImageUrl) {
+      const result = await TextRecognition.recognize(croppedImageUrl);
+      const spaceRemovedText = result.text.split('\n').join('');
+      let re = /[a-zA-Z][a-zA-Z][0-9]{1,2}[a-zA-Z]{1,2}[0-9]{1,4}/gi;
+      let re2 = /[a-zA-Z][a-zA-Z][0-9]{1,2}[0-9]{1,4}/gi;
+      let indRemovedtext = spaceRemovedText.replace('IND', '');
+      let zeroReplacingText = indRemovedtext.replace('O', 0);
+      let specialCharachterRemovedText = zeroReplacingText.replace(
+        /[^A-Z0-9]/gi,
+        '',
+      );
+      let reString = specialCharachterRemovedText.match(re);
+      let vechicleRegistrationNumber = reString ? reString[0] : '';
+      if (vechicleRegistrationNumber == '') {
+        reString = indRemovedtext.match(re2);
+        vechicleRegistrationNumber = reString ? reString[0] : '';
+      }
+      setSearchQuery(vechicleRegistrationNumber);
+      const vehicleDetails = await viewVehicleFromDatabase(
+        vechicleRegistrationNumber,
+        uniqueField,
+      );
+      if (vehicleDetails) {
+        return;
+      } else {
+        const dbVehicleNumbersLike = await regexVehicleNumberFinder(
+          vechicleRegistrationNumber,
+          uniqueField,
+        );
+        const matchingArray = [];
+        dbVehicleNumbersLike.map(data => {
+          matchingArray.push(data[uniqueField]);
+        });
+        if (matchingArray.length > 0) {
+          let matches = stringSimilarity.findBestMatch(
+            `${vechicleRegistrationNumber}`,
+            matchingArray,
+          );
+          const similarResultArray = [];
+          if (matches.bestMatch.rating > 0.12) {
+            matches.ratings.map(result => {
+              if (result.rating > 0.11) {
+                similarResultArray.push(result.target);
+              }
+            });
+            setSimilarResult(similarResultArray);
+          } else {
+            notifyMessage('No matching result found', 'Failed', 'error');
+          }
+        } else {
+          notifyMessage('No matching result found', 'Failed', 'error');
+        }
+      }
+    }
+  }, [croppedImageUrl]);
+
   /*
   AutoCompleteDropdown functionality starts here
   */
@@ -88,9 +152,7 @@ const SearchVehicle = props => {
   AutoCompleteFunctionality ends here
   */
 
-  /**
-   * Function for issue pass
-   *  */
+  /** Function for issue pass */
   const issuePasstoVehicle = async id => {
     const userDataFromDb = await issuePass(id, userData);
     setUserData({});
@@ -113,7 +175,7 @@ const SearchVehicle = props => {
     ]);
   };
 
-  /** Revert Pass */ 
+  /** Revert Pass */
   const revertPassToVehicle = async id => {
     const revertedPass = await revertPass(id, userData);
     setUserData({});
@@ -352,6 +414,28 @@ const SearchVehicle = props => {
                         {searchQuery}
                       </Text>
                     </Text>
+                  )}
+                  {similarResult.length > 0 && (
+                    <View style={styles.similarResultView}>
+                      <Text style={styles.similarResultText}>
+                        Similar Results Found
+                      </Text>
+                      <View style={styles.similarResultView2}>
+                        {Object.keys(similarResult).map(function (detail, id) {
+                          return (
+                            <Chip
+                              key={{id}}
+                              elevated={true}
+                              style={styles.chipStyle}
+                              onPress={() =>
+                                viewVehicleFromDatabase(similarResult[detail])
+                              }>
+                              {similarResult[detail]}
+                            </Chip>
+                          );
+                        })}
+                      </View>
+                    </View>
                   )}
                 </View>
               )}

@@ -5,6 +5,8 @@ import {Provider} from 'react-native-paper';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import SearchVehicle from './screens/SearchVehicle';
+import DocumentScanner from './screens/DocumentScanner';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +21,11 @@ const Main = () => {
       <Stack.Screen
         name="SearchVehicle"
         component={SearchVehicle}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="DocumentScanner"
+        component={DocumentScanner}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

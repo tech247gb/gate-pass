@@ -306,6 +306,27 @@ export const viewVehicleDetails = (vehicleNumber, uniqueField) => {
 
 /**
  *
+ * @param {string} number string matched using regular expression
+ * @param {string} uniqueField selected unique_field name
+ * @returns
+ */
+export const regexVehicleNumberFinder = (number, uniqueField) => {
+  const lastDigit = number.charAt(number.length - 1);
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        `SELECT ${uniqueField} FROM vehicle_details where ${uniqueField} like ?`,
+        [`%${lastDigit}`],
+        (tx, results) => {
+          resolve(results.rows.raw());
+        },
+      );
+    });
+  });
+};
+
+/**
+ *
  * @param {string} filterToken value from autoCompleteDropdown
  * @param {string} uniqueField selected unique_field name
  * @returns slected data from data if any
