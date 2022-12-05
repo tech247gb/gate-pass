@@ -393,3 +393,120 @@ export const revertPass = (id, userData) => {
     });
   });
 };
+export const getVehicleById = id => {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM vehicle_details WHERE id = ?',
+        [id],
+        (tx, result) => {
+          let length = result.rows.length;
+
+          if (length > 0) {
+            const vehicleInfo = result.rows.raw()[0];
+            resolve(vehicleInfo);
+          } else {
+            resolve(null);
+          }
+        },
+      );
+    });
+  });
+};
+export const getFormFields = () => {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM field_mapping LIMIT 1', [], (tx, result) => {
+        let length = result.rows.length;
+        if (length > 0) {
+          const formFields = JSON.parse(result.rows.item(0).data);
+          resolve(formFields);
+        } else {
+          resolve(null);
+        }
+      });
+    });
+  });
+};
+/**
+ * Function for insert or update new data to database
+ * @param {object} editFormValues values from the form
+ * @param {string} uniqueFiled selected unique_field name
+ * @returns {true} when succcessfull insertion or updation happened
+ */
+export const updateVehicleInfo = (editFormValues, uniqueFiled) => {
+  return new Promise((resolve, reject) => {
+    delete editFormValues.id;
+    editFormValues[uniqueFiled].replace(/ /g, '');
+    const cols = Object.keys(editFormValues).join(', ');
+    const placeholders = Object.keys(editFormValues).fill('?').join(', ');
+    try {
+      db.transaction(tx => {
+        tx.executeSql(
+          `SELECT * FROM vehicle_details where ${uniqueFiled} = ? COLLATE NOCASE`,
+          [editFormValues[uniqueFiled].replace(/ /g, '')],
+          (tx, results) => {
+            let len = results.rows.length;
+            if (len == 0) {
+              tx.executeSql(
+                'INSERT INTO vehicle_details (' +
+                  cols +
+                  ') VALUES (' +
+                  placeholders +
+                  ')',
+                Object.values(editFormValues),
+                (tx, results) => {
+                  if (results.rowsAffected > 0) {
+                    resolve(true);
+                  } else resolve(false);
+                },
+                (transaction, error) => {},
+              );
+            } else {
+              const keyValues = [];
+              const params = [];
+              for (const key in editFormValues) {
+                keyValues.push(`${key} = ?`);
+                params.push(editFormValues[key]);
+              }
+              const sql = `UPDATE vehicle_details SET ${keyValues.toString()} WHERE id = ?`;
+              params.push(results.rows.item(0).id);
+
+              tx.executeSql(
+                `UPDATE vehicle_details SET ${keyValues.toString()} WHERE id = ?`,
+                params,
+                (tx, results) => {
+                  if (results.rowsAffected > 0) {
+                    resolve(true);
+                  } else resolve(false);
+                },
+                (transaction, error) => {},
+              );
+            }
+          },
+          (transaction, error) => {},
+        );
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+};
+/**
+ *
+ * @param {string} uniqueFiled selected unique_field name
+ * @returns {object} all data from unique_field if exists
+ */
+export const viewAllVehicleFromDatabase = uniqueFiled => {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        `SELECT column0,${uniqueFiled} FROM vehicle_details ORDER BY column0`,
+        [],
+        (tx, results) => {
+          resolve(results.rows.raw());
+        },
+      );
+    });
+  });
+};

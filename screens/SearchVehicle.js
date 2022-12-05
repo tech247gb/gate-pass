@@ -51,6 +51,17 @@ const SearchVehicle = props => {
     }
   }, [isFocused]);
 
+  /** UseEffect for identifying navigation from edit page */
+  useEffect(() => {
+    if (
+      typeof editedVehicleNumber != 'undefined ' &&
+      editedVehicleNumber != null
+    ) {
+      viewVehicleFromDatabase(editedVehicleNumber, uniqueField);
+      props.navigation.setParams({vehicleNumber: null});
+    }
+  }, [editedVehicleNumber]);
+
   /** UseEffect for identifying navigation From Document Scanner */
   useEffect(async () => {
     if (croppedImageUrl) {
@@ -222,7 +233,7 @@ const SearchVehicle = props => {
               mode="contained"
               onPress={() => {
                 navigation.navigate('Main', {
-                  screen: 'AddVehicleDetailsScreen',
+                  screen: 'AddVehicleDetails',
                   params: {vehicleId: userData.id},
                 });
               }}>

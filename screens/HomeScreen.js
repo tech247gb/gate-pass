@@ -374,7 +374,11 @@ const HomeScreen = props => {
                     contentStyle={{color: MD3Colors.error0}}
                     leadingIcon="car-info"
                     onPress={() => {
-                      //
+                      navigation.navigate('Main', {
+                        screen: 'AddVehicleDetails',
+                        params: {vehicleId: null},
+                      });
+                      hideMenu();
                     }}
                     title="Register Vehicle"
                   />
@@ -390,6 +394,17 @@ const HomeScreen = props => {
               imageStyle={{
                 resizeMode: 'center',
               }}></ImageBackground>
+            <FAB
+              icon="car"
+              label={`Total Vehicles - ${totalCount}`}
+              customSize={30}
+              style={styles.fab}
+              mode="elevated"
+              animated={true}
+              onPress={() =>
+               {}
+              }
+            />
           </View>
           <View style={styles.flex2}>
             <Button
