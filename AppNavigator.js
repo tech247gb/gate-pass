@@ -7,6 +7,7 @@ import HomeScreen from './screens/HomeScreen';
 import SearchVehicle from './screens/SearchVehicle';
 import DocumentScanner from './screens/DocumentScanner';
 import AddVehicleDetails from './screens/AddVehicleDetails';
+import ViewAllVehicleDetails from './screens/ViewAllVehicleDetails';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,11 @@ const Main = () => {
       <Stack.Screen
         name="AddVehicleDetails"
         component={AddVehicleDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ViewAllVehicleDetails"
+        component={ViewAllVehicleDetails}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

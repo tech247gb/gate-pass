@@ -41,7 +41,9 @@ const SearchVehicle = props => {
   const [similarResult, setSimilarResult] = useState([]);
   const [uniqueField, setUniqueField] = useState();
   const isFocused = useIsFocused();
+  const selectedVehicleNumber = props?.route?.params?.singleVehicleSelected;
   const croppedImageUrl = props?.route?.params?.croppedImageUrl;
+  const editedVehicleNumber = props?.route?.params?.vehicleNumber;
   const {navigation} = props;
 
   useEffect(async () => {
@@ -50,6 +52,19 @@ const SearchVehicle = props => {
       setUniqueField(uniqueId);
     }
   }, [isFocused]);
+
+  /** UseEffect for identifying navigation from View all vehicle page */
+  useEffect(() => {
+    if (
+      typeof selectedVehicleNumber != 'undefined' &&
+      selectedVehicleNumber != null
+    ) {
+      viewVehicleFromDatabase(selectedVehicleNumber, uniqueField);
+      if (typeof uniqueField != 'undefined') {
+        props.navigation.setParams({singleVehicleSelected: null});
+      }
+    }
+  }, [isFocused, selectedVehicleNumber, uniqueField]);
 
   /** UseEffect for identifying navigation from edit page */
   useEffect(() => {
@@ -163,7 +178,10 @@ const SearchVehicle = props => {
   AutoCompleteFunctionality ends here
   */
 
-  /** Function for issue pass */
+  /**
+   *  Function for issue pass
+   * @param {number} id  table id
+   */
   const issuePasstoVehicle = async id => {
     const userDataFromDb = await issuePass(id, userData);
     setUserData({});
@@ -174,7 +192,10 @@ const SearchVehicle = props => {
     }
   };
 
-  /** Revert Pass Confirmation */
+  /**
+   * Revert Pass Confirmation
+   * @param {number} id table id
+   */
   const revertPassconfirmation = id => {
     Alert.alert('Revert Pass', 'Are you sure you want to revert pass?', [
       {
@@ -206,7 +227,10 @@ const SearchVehicle = props => {
     });
   };
 
-  /** Search function for getting searched element in database */
+  /**
+   * Search function for getting searched element in database
+   * @param {string} vehicleNumber search value
+   */
   const viewVehicleFromDatabase = async vehicleNumber => {
     const dataFromDb = await viewVehicleDetails(vehicleNumber, uniqueField);
     if (Object.keys(dataFromDb).length > 0) {

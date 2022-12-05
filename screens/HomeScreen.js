@@ -142,7 +142,7 @@ const HomeScreen = props => {
           Papa.parse(res, {
             header: true,
             skipEmptyLines: true,
-            complete: async results => {
+            complete: async (results) => {
               let data = [];
               if (results && results['data'] && results['data'].length > 0) {
                 const aa = XLSX.read(res, {type: 'binary'});
@@ -402,7 +402,9 @@ const HomeScreen = props => {
               mode="elevated"
               animated={true}
               onPress={() =>
-               {}
+                navigation.navigate('Main', {
+                  screen: 'ViewAllVehicleDetails',
+                })
               }
             />
           </View>
