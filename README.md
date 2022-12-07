@@ -33,3 +33,11 @@ For Build and run the app
 npm start
 npx react-native run-android
 ```
+# Screenshots
+
+<img src="https://user-images.githubusercontent.com/54674453/206155842-8e035633-3964-43cb-becd-2b2127d6352a.JPEG" width=300 height=600>
+<img src="https://user-images.githubusercontent.com/54674453/206157872-e5cb2485-d8b8-467c-a2cd-e30880529719.JPEG" width=300 height=600>
+<img src="https://user-images.githubusercontent.com/54674453/206158480-57289925-6ae4-42cf-90d7-8ab908661d6b.JPEG" width=300 height=600>
+<img src="https://user-images.githubusercontent.com/54674453/206158970-f8f5f9e8-b702-4126-8621-b7fca4d58834.JPEG" width=300 height=600>
+
+
