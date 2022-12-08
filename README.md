@@ -1,5 +1,5 @@
 # GATE PASS
-## Gate Pass is an application used to get the details from the uploaded data using vehicle numbers.
+## Gate pass application uses the power of AI for getting entry to a function/meet or for allotting the parking slots for users by issuing passes.
 
 
 
